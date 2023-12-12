@@ -2,3 +2,6 @@ VPC module
 
 https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete/outputs.tf
 
+
+terraform plan -var-file="dev.tfvars"
+terraform plan -var-file="prod.tfvars"
