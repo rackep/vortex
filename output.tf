@@ -23,7 +23,7 @@ output "vpc_cidr_block" {
   value       = module.vpc.vpc_cidr_block
 }
 
-# output "mylocal" {
-#   description = "The CIDR block of the VPC"
-#   value       = local.my_local
-# }
+output "mylocal" {
+  description = "The CIDR block of the VPC"
+  value       = local.my_local
+}

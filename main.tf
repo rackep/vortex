@@ -1,59 +1,42 @@
-provider "aws" {
-  region = local.region
-}
+# resource "aws_vpc" "vpc" {
+#   cidr_block           = var.vpc_cidr
+#   enable_dns_hostnames = true
+#   tags = {
+#     name = "main"
+#   }
+# }
+# resource "aws_subnet" "subnet" {
+#   vpc_id                  = aws_vpc.vpc.id
+#   cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 8, 1)
+#   map_public_ip_on_launch = true
+#   availability_zone       = "eu-central-1a"
+# }
+
+# resource "aws_subnet" "subnet2" {
+#   vpc_id                  = aws_vpc.vpc.id
+#   cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 8, 2)
+#   map_public_ip_on_launch = true
+#   availability_zone       = "eu-central-1b"
+# }
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "west-${basename(path.cwd)}"
-  region = "eu-central-1"
-
-  vpc_cidr = "10.20.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  tags = {
-    Example    = local.name
-    GithubRepo = "terraform-aws-vpc"
-    GithubOrg  = "terraform-aws-modules"
-  }
+  subnet_count = length(data.aws_availability_zones.available.names)
+  my_local = var.my_variable
 }
-
-################################################################################
-# VPC Module
-################################################################################
 
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = local.name
-  cidr = local.vpc_cidr
-
-  azs                 = local.azs
-  private_subnets     = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  public_subnets      = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 4)]
-  database_subnets    = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 8)]
-
-  private_subnet_names = ["Private Subnet One", "Private Subnet Two"]
-  # public_subnet_names omitted to show default name generation for all three subnets
-  database_subnet_names    = ["DB Subnet One"]
-
-  create_database_subnet_group  = false
-  manage_default_network_acl    = false
-  manage_default_route_table    = false
-  manage_default_security_group = false
-
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
+  name = "vortex-vpc"
+  cidr = var.vpc_cidr_block
+  azs = data.aws_availability_zones.available.names
   enable_nat_gateway = true
   single_nat_gateway = true
+  create_database_subnet_group = true
+  database_subnets = [for i in range(local.subnet_count): cidrsubnet(var.vpc_cidr_block, 6, i)]
+  private_subnets = [for i in range(local.subnet_count): cidrsubnet(var.vpc_cidr_block, 6, i + local.subnet_count * 3)]
+  public_subnets = [for i in range(local.subnet_count): cidrsubnet(var.vpc_cidr_block, 6, i + local.subnet_count * 6)]
 
-
-  # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = true
-  create_flow_log_cloudwatch_log_group = true
-  create_flow_log_cloudwatch_iam_role  = true
-  flow_log_max_aggregation_interval    = 60
-
-  tags = local.tags
 }
