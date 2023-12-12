@@ -1,0 +1,25 @@
+# Global
+aws_region = "eu-north-1"
+
+environment = "prod"
+namespace = "companyname" # project name e.g. companyname
+
+# VPC
+vpc_cidr_block = "10.30.0.0/16"
+
+# Route 53
+root_domain_name = "" # DNS domain name e.g. example.com
+r53_zone_id      = "" # Route 53 zone id e.g. Z0************
+
+# RDS
+db_username = "" # default db username e.g. postgres
+db_password = "" # db password, must be 8 characters or more
+db_name     = "postgres" # database na
+
+# ECS
+maximum_scaling_step_size = 5
+minimum_scaling_step_size = 1
+target_capacity           = 100
+
+frontend_container_image = "public.ecr.aws/v9r9z5i2/vw-frontend:latest" # "micic/vortexwest:frontend"
+backend_container_image = "micic/vortexwest:backend"
