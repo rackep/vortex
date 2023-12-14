@@ -16,6 +16,7 @@ variable "sg_alb" {
 
 variable "environment" {
   type = string
+  default     = ""
 }
 
 
@@ -26,6 +27,7 @@ variable "environment" {
 variable "namespace" {
   description = "Namespace for resource names"
   type        = string
+  default     = ""
 }
 
 variable "domain_name" {

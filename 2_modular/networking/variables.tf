@@ -12,9 +12,11 @@ variable "vpc_cidr_block" {
 
 variable "environment" {
   type = string
+  default     = ""
 }
 
 variable "namespace" {
   description = "Namespace for resource names"
   type        = string
+  default     = ""
 }
