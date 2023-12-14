@@ -9,7 +9,7 @@ locals {
 #   subnet_count = length(data.aws_availability_zones.available.names) # prvi nacin
   azs      = slice(data.aws_availability_zones.available.names, 0, 3) # drugi nacin, github module example
 
-  my_local = var.my_variable
+  environment = var.environment
   name   = "${basename(path.cwd)}-west"
   region = var.aws_region
   vpc_cidr = var.vpc_cidr_block
@@ -32,9 +32,9 @@ module "vpc" {
   cidr = local.vpc_cidr
 
 #   azs = data.aws_availability_zones.available.names # prvi nacin
-  enable_nat_gateway = true
-  single_nat_gateway = true
-  create_database_subnet_group = true
+  enable_nat_gateway = false # true
+  single_nat_gateway = false # true
+  create_database_subnet_group = false # pada ako se stavi na true https://github.com/terraform-aws-modules/terraform-aws-rds/issues/327
 
 #   database_subnets = [for i in range(local.subnet_count): cidrsubnet(var.vpc_cidr_block, 8, i)] # prvi nacin
 #   private_subnets = [for i in range(local.subnet_count): cidrsubnet(var.vpc_cidr_block, 8, i + 3)] # prvi nacin

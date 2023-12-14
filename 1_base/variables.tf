@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS Region"
   type    = string
-  default = "eu-west-1"
+  default = "eu-north-1"
 }
 
 variable "vpc_cidr_block" {
@@ -10,8 +10,8 @@ variable "vpc_cidr_block" {
   default     = "10.0.0.0/16"
 }
 
-variable "my_variable" {
+variable "environment" {
   type = string
-  default = "Hello, world!"
+  default = "dev"
 }
 
