@@ -40,7 +40,7 @@ variable "autoscaling_min_size" {
 }
 
 ### General Variables ###
-variable "domain_name" {
+variable "root_domain_name" {
   type        = string
   description = "The domain name for the website."
   default     = "www.example.info"

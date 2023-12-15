@@ -10,7 +10,7 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3) # drugi nacin, github module example
 
   environment = var.environment
-  name   = "${basename(path.cwd)}-west-${var.environment}"
+  name   = "${basename(path.cwd)}-${var.namespace}-${var.environment}"
   region = var.aws_region
   vpc_cidr = var.vpc_cidr_block
 

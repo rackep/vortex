@@ -3,15 +3,18 @@ provider "aws" {
 }
 
 locals {
-  name   = "${basename(path.cwd)}-west"
+  name   = "${basename(path.cwd)}-${var.namespace}-${var.environment}"
   region = var.aws_region
   vpc_cidr = var.vpc_cidr_block
-  environment = var.environment
-  namespace = var.namespace
+  # environment = var.environment
+  # namespace = var.namespace
+  domain_name = "${var.namespace}-${var.environment}.${var.root_domain_name}"
 }
 
 module "networking" {
   source    = "./networking"
+  environment = var.environment
+  namespace = var.namespace
 }
 
 module "compute" {
@@ -24,5 +27,7 @@ module "compute" {
   autoscaling_min_size = var.autoscaling_min_size
   autoscaling_max_size = var.autoscaling_max_size
   r53_zone_id = var.r53_zone_id
-  domain_name = var.domain_name
+  environment = var.environment
+  namespace = var.namespace
+  domain_name = local.domain_name
 }

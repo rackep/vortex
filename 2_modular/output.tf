@@ -67,3 +67,13 @@ output "instance_ids" {
   description = "Public Security Group IDs"
   value       = module.compute.instance_ids
 }
+
+output "alb_dns" {
+  description = "ALB DNS name"
+  value       = module.compute.alb_dns
+}
+
+output "domain_name" {
+  description = "Final DNS name"
+  value       = local.domain_name
+}

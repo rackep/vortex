@@ -10,3 +10,7 @@
 #   description = "Public Security Group IDs"
 #   value       = data.aws_instances.ecs_instances.ids
 # }
+
+output "alb_dns" {
+  value = aws_alb.alb.dns_name
+}
