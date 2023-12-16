@@ -16,7 +16,7 @@ output "vpc_cidr_block" {
 output "vpc_name" {
   description = "VPC Name"
   #value       = module.networking.vpc
-  value       = module.networking.vpc.name
+  value = module.networking.vpc.name
 }
 
 # output "vpc_all" {
@@ -24,14 +24,19 @@ output "vpc_name" {
 #   value       = module.networking.vpc
 # }
 
-output "vpc_private_subnets" {
+output "vpc_subnets_private" {
   description = "VPC Private Subnets IDs"
   value       = module.networking.vpc.private_subnets
 }
 
-output "vpc_public_subnets" {
+output "vpc_subnets_public" {
   description = "VPC Public Subnets IDs"
   value       = module.networking.vpc.public_subnets
+}
+
+output "vpc_subnets_database" {
+  description = "List of IDs of database subnets"
+  value       = module.networking.vpc.database_subnets
 }
 
 output "sg_private_id" {
@@ -45,8 +50,13 @@ output "sg_alb_id" {
 }
 
 output "sg_public_id" {
-  description = "SG ALB ID"
+  description = "SG Public ID"
   value       = module.networking.sg_alb
+}
+
+output "sg_db_id" {
+  description = "SG DB ID"
+  value       = module.networking.sg_db
 }
 
 

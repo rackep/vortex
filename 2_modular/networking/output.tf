@@ -26,3 +26,8 @@ output "sg_public" {
   description = "Public Security Group IDs"
   value       = aws_security_group.sg_public.id
 }
+
+output "sg_db" {
+  description = "DB Security Group IDs"
+  value       = aws_security_group.sg_db.id
+}

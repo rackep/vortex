@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS Region"
-  type    = string
-  default = "eu-north-1"
+  type        = string
+  default     = "eu-north-1"
 }
 
 variable "vpc_cidr_block" {
@@ -11,7 +11,7 @@ variable "vpc_cidr_block" {
 }
 
 variable "environment" {
-  type = string
+  type    = string
   default = "dev"
 }
 
@@ -24,7 +24,7 @@ variable "namespace" {
 variable "public_ec2_key" {
   description = "Public key for SSH access to EC2 instances"
   type        = string
-  default = "publicsshkey"
+  default     = "publicsshkey"
 }
 
 variable "autoscaling_max_size" {
@@ -50,4 +50,16 @@ variable "r53_zone_id" {
   type        = string
   description = "The zone ID of the domain you are deploying to, you can get it from R53 DNS Dashboard"
   default     = "Z002051618M4QHG4VM3M6"
+}
+
+variable "db_username" {
+  description = "Database administrator username"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "Database administrator password"
+  type        = string
+  sensitive   = true
 }
