@@ -1,5 +1,21 @@
 # Vortex terraform project
 
+# Prerequisites
+
+# AWS Account
+Access key ID & Secret Access Key of that account with user logged in.
+
+# Tools
+
+```bash
+$ aws --version
+aws-cli/2.13.28 Python/3.11.6 Windows/10 exe/AMD64 prompt/off
+
+$ terraform version
+Terraform v1.6.2
+on windows_amd64
++ provider registry.terraform.io/hashicorp/aws v5.30.0
+```
 
 # Terraform commands
 
