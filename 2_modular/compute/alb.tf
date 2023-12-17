@@ -1,5 +1,5 @@
 ########################################################################################################################
-## Application Load Balancer in public subnets with HTTP default listener that redirects traffic to HTTPS
+## Application Load Balancer in public subnets with HTTP default listener that redirects traffic to HTTP
 ########################################################################################################################
 
 resource "aws_alb" "alb" {
@@ -10,79 +10,30 @@ resource "aws_alb" "alb" {
 }
 
 ########################################################################################################################
-## Default HTTPS listener that blocks all traffic without valid custom origin header
+## HTTP listener 
 ########################################################################################################################
 
-# resource "aws_alb_listener" "alb_default_listener_https" {
-#   load_balancer_arn = aws_alb.alb.arn
-#   port              = 443
-#   protocol          = "HTTPS"
-#   certificate_arn   = aws_acm_certificate.alb_certificate.arn
-#   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-
-#   default_action {
-#     type = "fixed-response"
-
-#     fixed_response {
-#       content_type = "text/plain"
-#       message_body = "Access denied"
-#       status_code  = "403"
-#     }
-#   }
-
-#    depends_on = [aws_acm_certificate.alb_certificate]
-# }
-
-#############
-
-resource "aws_lb_listener" "alb_default_listener_http" {
+resource "aws_alb_listener" "alb_default_listener_http" {
   load_balancer_arn = aws_alb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_tg.arn
-  }
-}
-
-
-resource "aws_lb_target_group" "ecs_tg" {
-  name        = "${var.namespace}-TG-${var.environment}"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = var.vpc.vpc_id
-
-  health_check {
-    path = "/"
-  }
-}
-
-data "aws_instances" "ecs_instances" {
-  instance_tags = {
-    Name = "${var.namespace}_ASG_${var.environment}"
+    target_group_arn = aws_alb_target_group.service_target_group.arn
   }
 
-  instance_state_names = ["running"]
-}
+  # default_action {
+  #   type = "fixed-response"
 
-output instance_ids {
-    value = data.aws_instances.ecs_instances.ids
-}
+  #   fixed_response {
+  #     content_type = "text/plain"
+  #     message_body = "Access denied"
+  #     status_code  = "403"
+  #   }
+  # }
 
-
-#### Route 53 - Remove
-
-resource "aws_route53_record" "www" {
-  zone_id = var.r53_zone_id
-  name    = var.domain_name
-  type    = "A"
-
-  alias {
-    name                   = aws_alb.alb.dns_name
-    zone_id                = aws_alb.alb.zone_id
-    evaluate_target_health = true
-  }
+  #  depends_on = [aws_acm_certificate.alb_certificate]
 }
 
 ########################################################################################################################
@@ -116,22 +67,77 @@ resource "aws_route53_record" "www" {
 ## Target Group for our service
 ########################################################################################################################
 
-# resource "aws_alb_target_group" "service_target_group" {
-#   name                 = "${var.namespace}-TargetGroup-${var.environment}"
-#   port                 = 80
-#   protocol             = "HTTP"
-#   vpc_id               = var.vpc.vpc_id
-#   deregistration_delay = 5
+resource "aws_alb_target_group" "service_target_group" {
+  name                 = "${var.namespace}-TargetGroup-${var.environment}"
+  port                 = 80
+  protocol             = "HTTP"
+  vpc_id               = var.vpc.vpc_id
+  deregistration_delay = 5
+  # target_type          = "ip"
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    interval            = 60
+    path                = "/" # var.healthcheck_endpoint  # matcher = var.healthcheck_matcher
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 30
+  }
+
+  depends_on = [aws_alb.alb]
+}
+
+
+#############
+
+# resource "aws_lb_listener" "alb_default_listener_http" {
+#   load_balancer_arn = aws_alb.alb.arn
+#   port              = 80
+#   protocol          = "HTTP"
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.ecs_tg.arn
+#   }
+# }
+
+
+# resource "aws_lb_target_group" "ecs_tg" {
+#   name     = "${var.namespace}-TG-${var.environment}"
+#   port     = 80
+#   protocol = "HTTP"
+#   vpc_id   = var.vpc.vpc_id
 
 #   health_check {
-#     healthy_threshold   = 2
-#     unhealthy_threshold = 2
-#     interval            = 60
-#     path                = "/"  # var.healthcheck_endpoint  # matcher = var.healthcheck_matcher
-#     port                = "traffic-port"
-#     protocol            = "HTTP"
-#     timeout             = 30
+#     path = "/"
 #   }
-
-#   depends_on = [aws_alb.alb]
 # }
+
+data "aws_instances" "ecs_instances" {
+  instance_tags = {
+    Name = "${var.namespace}_ASG_${var.environment}"
+  }
+
+  instance_state_names = ["running"]
+}
+
+output "instance_ids" {
+  value = data.aws_instances.ecs_instances.ids
+}
+
+
+#### Route 53 - Remove
+
+resource "aws_route53_record" "www" {
+  zone_id = var.r53_zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_alb.alb.dns_name
+    zone_id                = aws_alb.alb.zone_id
+    evaluate_target_health = true
+  }
+}
+

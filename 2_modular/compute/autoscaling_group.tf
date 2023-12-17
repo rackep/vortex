@@ -10,7 +10,7 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   health_check_type     = "EC2"
   protect_from_scale_in = true
 
-  target_group_arns         = ["${aws_lb_target_group.ecs_tg.arn}"] # For registering ASG instances to Target Group
+  # target_group_arns = ["${aws_lb_target_group.ecs_tg.arn}"] # For registering ASG instances to Target Group
 
   enabled_metrics = [
     "GroupMinSize",

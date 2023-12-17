@@ -28,19 +28,17 @@ data "aws_ami" "amazon_linux_2" {
 ########################################################################################################################
 
 resource "aws_launch_template" "ecs_launch_template" {
-  name                   = "EC2_LaunchTemplate-${var.environment}"
-  image_id               = data.aws_ami.amazon_linux_2.id
-  instance_type          = var.instance_type
+  name          = "EC2_LaunchTemplate-${var.environment}"
+  image_id      = data.aws_ami.amazon_linux_2.id
+  instance_type = var.instance_type
 
   key_name               = aws_key_pair.default.key_name
   vpc_security_group_ids = [var.sg_private]
-  user_data = filebase64("${path.module}/user_data.sh")
+  user_data              = filebase64("${path.module}/user_data.sh")
 
   iam_instance_profile {
     name = "ecsInstanceRole"
   }
-
-#   user_data = filebase64("${path.module}/user_data.sh")
 
   block_device_mappings {
     device_name = "/dev/xvda"

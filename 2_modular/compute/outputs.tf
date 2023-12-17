@@ -14,3 +14,13 @@
 output "alb_dns" {
   value = aws_alb.alb.dns_name
 }
+
+
+
+output "ecs_asg_arn" {
+  value = aws_autoscaling_group.ecs_autoscaling_group.arn
+}
+
+output "aws_alb_target_group_arn" {
+  value = aws_alb_target_group.service_target_group.arn
+}

@@ -200,15 +200,6 @@ resource "aws_security_group_rule" "db_egress" {
   source_security_group_id = aws_security_group.sg_db.id
 }
 
-resource "aws_security_group_rule" "ingress" {
-  type                     = "egress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.sg_private.id
-  source_security_group_id = aws_security_group.sg_db.id
-}
-
 resource "aws_security_group_rule" "priv_in_db" {
   type                     = "ingress"
   from_port                = 5432
