@@ -37,7 +37,7 @@ module "compute" {
 }
 
 module "rds" {
-  source                     = "./../../rds"
+  source                     = "./rds"
   vpc                        = module.networking.vpc
   environment                = var.environment
   namespace                  = var.namespace
@@ -49,7 +49,7 @@ module "rds" {
 }
 
 module "ecs" {
-  source      = "./../../ecs"
+  source      = "./ecs"
   vpc         = module.networking.vpc
   environment = var.environment
   namespace   = var.namespace

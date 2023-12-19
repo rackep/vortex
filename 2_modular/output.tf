@@ -59,6 +59,10 @@ output "sg_db_id" {
   value       = module.networking.sg_db
 }
 
+output "rds_endpoint" {
+  description = "RDS endpoint"
+  value       = module.rds.rds_endpoint
+}
 
 
 ##############
