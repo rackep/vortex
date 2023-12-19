@@ -37,7 +37,7 @@ module "compute" {
 }
 
 module "rds" {
-  source                     = "./rds"
+  source                     = "./../../rds"
   vpc                        = module.networking.vpc
   environment                = var.environment
   namespace                  = var.namespace
@@ -45,10 +45,11 @@ module "rds" {
   database_subnet_group_name = module.networking.vpc.database_subnet_group_name
   db_username                = var.db_username
   db_password                = var.db_password
+  db_name                    = var.db_name
 }
 
 module "ecs" {
-  source      = "./ecs"
+  source      = "./../../ecs"
   vpc         = module.networking.vpc
   environment = var.environment
   namespace   = var.namespace
@@ -59,8 +60,10 @@ module "ecs" {
   # postgres_host            = var.postgres_host
   sg_private   = module.networking.sg_private
   rds_endpoint = module.rds.rds_endpoint
+  region       = local.region
   # sg_db                      = module.networking.sg_db
   # database_subnet_group_name = module.networking.vpc.database_subnet_group_name
   db_username = var.db_username
   db_password = var.db_password
+  db_name     = var.db_name
 }
