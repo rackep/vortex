@@ -9,7 +9,7 @@ resource "aws_db_instance" "postgres" {
   engine_version    = "16.1"
   identifier        = lower(local.name)
   instance_class    = "db.t3.micro"
-  db_name           = "postgres"
+  db_name           = var.db_name
   username          = var.db_username
   password          = var.db_password
   port              = 5432

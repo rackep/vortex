@@ -7,20 +7,17 @@ resource "aws_ecs_task_definition" "default" {
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_iam_role.arn
 
-  # network_mode             = "awsvpc"
-  # requires_compatibilities = ["EC2"]
-  # cpu                      = 512
-  # runtime_platform {
-  #   operating_system_family = "LINUX"
-  #   cpu_architecture        = "X86_64"
-  # }
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 2048
 
   container_definitions = jsonencode([
     {
       "name" : "frontend",
       "image" : var.frontend_container_image,
-      "cpu" : 256,
-      "memory" : 256,
+      # "cpu" : 256,
+      # "memoryReservation" : 512,
       "essential" : true,
       "portMappings" : [
         {
@@ -31,19 +28,36 @@ resource "aws_ecs_task_definition" "default" {
           "appProtocol" : "http"
         }
       ],
-      "dependsOn" : [
-        {
-          "containerName" : "backend",
-          "condition" : "HEALTHY"
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.log_group.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "${var.namespace}-log-stream-${var.environment}"
         }
+      },
+      "healthCheck" : {
+        "command" : [
+          "CMD-SHELL",
+          "curl -f http://localhost/ || exit 1"
+        ],
+        "interval" : 30,
+        "timeout" : 5,
+        "retries" : 3
+      },
+      "environment" : [
+        {
+          "name" : "NGINX_HOST",
+          "value" : "frontend"
+        },
       ]
     },
     {
       "name" : "backend",
       "image" : var.backend_container_image,
-      "cpu" : 256,
-      "memory" : 256,
-      "essential" : true,
+      # "cpu" : 256,
+      # "memory" : 512,
+      "essential" : false,
       "portMappings" : [
         {
           "name" : "8000",
@@ -52,30 +66,47 @@ resource "aws_ecs_task_definition" "default" {
           "protocol" : "tcp"
         }
       ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.log_group.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "${var.namespace}-log-stream-${var.environment}"
+        }
+      },
+      "healthCheck" : {
+        "command" : ["CMD-SHELL", "curl -f http://localhost:8000/swagger/"],
+        "interval" : 30,
+        "timeout" : 5,
+        "retries" : 3
+      },
       "command" : [
+        "sh",
+        "-c",
         "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
       ],
       "environment" : [
         {
           "name" : "POSTGRES_HOST",
-          "value" : var.postgres_host # "db"
-        }
-      ],
-      "healthCheck" : {
-        "command" : [
-          "CMD-SHELL",
-          "curl -f http://localhost:8000/swagger/ || exit 1"
-        ],
-        "interval" : 30,
-        "timeout" : 5,
-        "retries" : 3
-      }
+          "value" : replace(var.rds_endpoint, ":5432", "") # "vortexwest-dev-postgresdb.c8kyovqj38f0.eu-north-1.rds.amazonaws.com" # "db" endpoint
+        },
+        {
+          "name" : "POSTGRES_USER",
+          "value" : var.db_username # "postgres"
+        },
+        {
+          "name" : "POSTGRES_PASSWORD",
+          "value" : var.db_password # "00000000"
+        },
+        {
+          "name" : "POSTGRES_PORT",
+          "value" : "5432"
+        },
+        {
+          "name" : "POSTGRES_DB",
+          "value" : var.db_name # "postgres"
+        },
+      ]
     }
   ])
 }
-
-# resource "aws_cloudwatch_log_group" "log_group" {
-#   name              = "/${lower(var.namespace)}/ecs/aws-ecs-ec2"
-#   retention_in_days = 30
-
-# }

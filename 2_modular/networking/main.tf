@@ -31,6 +31,11 @@ module "vpc" {
   name = local.name
   cidr = local.vpc_cidr
 
+  enable_dns_support   = true # Should be true to enable DNS support in the VPC
+  enable_dns_hostnames = true # Should be true to enable DNS hostnames in the VPC
+
+
+
   #   azs = data.aws_availability_zones.available.names # prvi nacin
   enable_nat_gateway = true # true
   single_nat_gateway = true # true

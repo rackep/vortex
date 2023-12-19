@@ -4,8 +4,7 @@ variable "environment" {
 }
 
 variable "region" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "namespace" {
@@ -14,10 +13,10 @@ variable "namespace" {
   default     = ""
 }
 
-variable "ecs_asg_arn" {
-  description = "ECS application Load balancer ARN"
-  type        = string
-}
+# variable "ecs_asg_arn" {
+#   description = "ECS application Load balancer ARN"
+#   type        = string
+# }
 
 variable "aws_alb_target_group_arn" {
   description = "Load balancer Target Group ARN"
@@ -52,10 +51,10 @@ variable "backend_container_image" {
   type        = string
 }
 
-variable "postgres_host" {
-  description = "Backend Container Image"
-  type        = string
-}
+# variable "postgres_host" {
+#   description = "Backend Container Image"
+#   type        = string
+# }
 
 variable "vpc" {
   type = any
@@ -64,3 +63,28 @@ variable "vpc" {
 variable "sg_private" {
   type = string
 }
+
+#############
+# RDS
+#############
+variable "rds_endpoint" {
+  type = string
+}
+
+variable "db_username" {
+  description = "Database administrator username"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "Database administrator password"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database administrator password"
+  type        = string
+}
+

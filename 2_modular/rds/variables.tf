@@ -32,3 +32,8 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "db_name" {
+  description = "Database administrator password"
+  type        = string
+}

@@ -7,3 +7,7 @@ output "db_instance_resource_id" {
   description = "The RDS Resource ID of this instance"
   value       = try(aws_db_instance.postgres.resource_id, null)
 }
+
+output "rds_endpoint" {
+  value = aws_db_instance.postgres.endpoint
+}

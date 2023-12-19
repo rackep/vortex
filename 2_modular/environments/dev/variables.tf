@@ -82,6 +82,12 @@ variable "db_password" {
   sensitive   = true
 }
 
+variable "db_name" {
+  description = "Database name"
+  type        = string
+}
+
+
 ##################
 # ECS
 ##################
@@ -111,11 +117,6 @@ variable "frontend_container_image" {
 }
 
 variable "backend_container_image" {
-  description = "Backend Container Image"
-  type        = string
-}
-
-variable "postgres_host" {
   description = "Backend Container Image"
   type        = string
 }

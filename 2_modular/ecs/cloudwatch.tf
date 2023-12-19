@@ -1,11 +1,10 @@
 ########################################################################################################################
-## Creates an ECS Cluster
+## Create log group for our service
 ########################################################################################################################
 
-resource "aws_ecs_cluster" "default" {
-  name = "${var.namespace}_ECSCluster_${var.environment}"
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "/${lower(var.namespace)}/ecs/${var.namespace}"
+  retention_in_days = 30
 
-  tags = {
-    Name = "${var.namespace}_ECSCluster_${var.environment}"
-  }
+
 }
