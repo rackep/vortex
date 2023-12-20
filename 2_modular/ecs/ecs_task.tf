@@ -74,12 +74,6 @@ resource "aws_ecs_task_definition" "default" {
           "awslogs-stream-prefix" = "${var.namespace}-log-stream-${var.environment}"
         }
       },
-      "healthCheck" : {
-        "command" : ["CMD-SHELL", "curl -f http://localhost:8000/swagger/"],
-        "interval" : 30,
-        "timeout" : 5,
-        "retries" : 3
-      },
       "command" : [
         "sh",
         "-c",

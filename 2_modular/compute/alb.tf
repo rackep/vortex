@@ -60,29 +60,21 @@ resource "aws_alb_target_group" "service_target_group" {
   target_type          = "ip"
 
   health_check {
+    # healthy_threshold   = 2
+    # unhealthy_threshold = 2
+    # interval            = 60
+    # path                = "/" # var.healthcheck_endpoint  # matcher = var.healthcheck_matcher
+    # port                = "traffic-port"
+    # protocol            = "HTTP"
+    # timeout             = 30
+    path                = "/swagger/"
+    protocol            = "HTTP"
+    port                = 8000
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    interval            = 60
-    path                = "/" # var.healthcheck_endpoint  # matcher = var.healthcheck_matcher
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 30
+    timeout             = 3
+    interval            = 30
   }
 
   depends_on = [aws_alb.alb]
 }
-
-#### Route 53
-
-resource "aws_route53_record" "www" {
-  zone_id = var.r53_zone_id
-  name    = var.domain_name
-  type    = "A"
-
-  alias {
-    name                   = aws_alb.alb.dns_name
-    zone_id                = aws_alb.alb.zone_id
-    evaluate_target_health = true
-  }
-}
-
