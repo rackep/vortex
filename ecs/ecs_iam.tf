@@ -1,6 +1,6 @@
-########################################################################################################################
+#####################################
 ## IAM Role for ECS Task execution
-########################################################################################################################
+#####################################
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "${var.namespace}_ECS_TaskExecutionRole_${var.environment}"
@@ -24,9 +24,9 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-########################################################################################################################
+#############################
 ## IAM Role for ECS Task
-########################################################################################################################
+#############################
 
 resource "aws_iam_role" "ecs_task_iam_role" {
   name               = "${var.namespace}_ECS_TaskIAMRole_${var.environment}"

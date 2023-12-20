@@ -3,8 +3,8 @@
 ########################################################################################################################
 
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 10 #var.ecs_task_max_count
-  min_capacity       = 2  # var.ecs_task_min_count
+  max_capacity       = 10
+  min_capacity       = 2
   resource_id        = "service/${aws_ecs_cluster.default.name}/${aws_ecs_service.service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -22,7 +22,7 @@ resource "aws_appautoscaling_policy" "ecs_cpu_policy" {
   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = 70 # var.cpu_target_tracking_desired_value
+    target_value = 70
 
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
@@ -42,7 +42,7 @@ resource "aws_appautoscaling_policy" "ecs_memory_policy" {
   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = 80 # var.memory_target_tracking_desired_value
+    target_value = 80
 
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageMemoryUtilization"

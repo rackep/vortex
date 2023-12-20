@@ -1,5 +1,6 @@
-##### Route 53 #####
-
+#####################
+## Route 53
+#####################
 resource "aws_route53_record" "www" {
   zone_id = var.r53_zone_id
   name    = var.domain_name

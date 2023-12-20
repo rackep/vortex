@@ -1,6 +1,6 @@
-########################################################################################################################
-## Application Load Balancer in public subnets with HTTP default listener that redirects traffic to HTTP
-########################################################################################################################
+##################################
+## Application Load Balancer 
+##################################
 
 resource "aws_alb" "alb" {
   name            = "${var.namespace}-ALB-${var.environment}"
@@ -9,19 +9,15 @@ resource "aws_alb" "alb" {
 
 }
 
-########################################################################################################################
+#####################
 ## HTTP listener 
-########################################################################################################################
+#####################
 
 resource "aws_alb_listener" "alb_default_listener_http" {
   load_balancer_arn = aws_alb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
-  # default_action {
-  #   type             = "forward"
-  #   target_group_arn = aws_alb_target_group.service_target_group.arn
-  # }
   default_action {
     type = "redirect"
     redirect {
@@ -47,9 +43,9 @@ resource "aws_lb_listener" "lb_listener-webservice-https" {
 }
 
 
-########################################################################################################################
-## Target Group for our service
-########################################################################################################################
+####################
+## Target Group
+####################
 
 resource "aws_alb_target_group" "service_target_group" {
   name                 = "${var.namespace}-TargetGroup-${var.environment}"
@@ -60,13 +56,6 @@ resource "aws_alb_target_group" "service_target_group" {
   target_type          = "ip"
 
   health_check {
-    # healthy_threshold   = 2
-    # unhealthy_threshold = 2
-    # interval            = 60
-    # path                = "/" # var.healthcheck_endpoint  # matcher = var.healthcheck_matcher
-    # port                = "traffic-port"
-    # protocol            = "HTTP"
-    # timeout             = 30
     path                = "/swagger/"
     protocol            = "HTTP"
     port                = 8000

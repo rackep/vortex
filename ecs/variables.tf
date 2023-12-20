@@ -13,11 +13,6 @@ variable "namespace" {
   default     = ""
 }
 
-# variable "ecs_asg_arn" {
-#   description = "ECS application Load balancer ARN"
-#   type        = string
-# }
-
 variable "aws_alb_target_group_arn" {
   description = "Load balancer Target Group ARN"
   type        = string
@@ -50,11 +45,6 @@ variable "backend_container_image" {
   description = "Backend Container Image"
   type        = string
 }
-
-# variable "postgres_host" {
-#   description = "Backend Container Image"
-#   type        = string
-# }
 
 variable "vpc" {
   type = any

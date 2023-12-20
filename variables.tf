@@ -36,21 +36,6 @@ variable "public_ec2_key" {
   default     = "publicsshkey"
 }
 
-####################
-# COMPUTE
-####################
-variable "autoscaling_max_size" {
-  description = "Max size of the autoscaling group"
-  default     = 4
-  type        = number
-}
-
-variable "autoscaling_min_size" {
-  description = "Min size of the autoscaling group"
-  default     = 2
-  type        = number
-}
-
 ######################
 # ROUTE 53
 ######################

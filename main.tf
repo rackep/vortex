@@ -22,18 +22,15 @@ module "networking" {
 }
 
 module "compute" {
-  source               = "./compute"
-  vpc                  = module.networking.vpc
-  sg_private           = module.networking.sg_private
-  sg_public            = module.networking.sg_public
-  sg_alb               = module.networking.sg_alb
-  public_ec2_key       = var.public_ec2_key
-  autoscaling_min_size = var.autoscaling_min_size
-  autoscaling_max_size = var.autoscaling_max_size
-  r53_zone_id          = var.r53_zone_id
-  environment          = var.environment
-  namespace            = var.namespace
-  domain_name          = local.domain_name
+  source      = "./compute"
+  vpc         = module.networking.vpc
+  sg_private  = module.networking.sg_private
+  sg_public   = module.networking.sg_public
+  sg_alb      = module.networking.sg_alb
+  r53_zone_id = var.r53_zone_id
+  environment = var.environment
+  namespace   = var.namespace
+  domain_name = local.domain_name
 }
 
 module "rds" {
